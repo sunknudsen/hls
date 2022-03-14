@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="hls.min.js"></script>
+    <script src="js.cookie.min.js"></script>
+    <title>hls</title>
+  </head>
+  <body>
+    <video id="video" width="100%" controls></video><br />
+    <button onclick="hls.currentLevel = 0">480p</button>
+    <button onclick="hls.currentLevel = 1">720p</button>
+    <button onclick="hls.currentLevel = 2">1080p</button>
+    <button onclick="hls.currentLevel = 3">2060p</button>
+    <button onclick="video.currentTime = 0">Scrub to beginning</button>
+    <button onclick="video.currentTime = 15">Scrub to 15 seconds</button>
+    <button onclick="Cookies.set('authorization', 'foo')">Log in</button>
+    <button onclick="Cookies.remove('authorization')">Log out</button>
+    <script>
+      if (Hls.isSupported()) {
+        var video = document.getElementById("video")
+        var hls = new Hls({
+          backBufferLength: 90,
+          capLevelToPlayerSize: true,
+          maxBufferSize: 5000000,
+          startLevel: 2,
+        })
+        hls.attachMedia(video)
+        hls.loadSource("playlist.m3u8")
+        hls.on(Hls.Events.MANIFEST_PARSED, function () {
+          console.log("Manifest parsed", hls.levels)
+        })
+        hls.on(Hls.Events.LEVEL_SWITCHED, function (event, data) {
+          console.log(`Level switched to ${data.level}`)
+        })
+      }
+    </script>
+  </body>
+</html>
